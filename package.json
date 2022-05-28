@@ -1,0 +1,21 @@
+{
+  "name": "mark-meta",
+  "version": "0.0.1",
+  "main": "index.js",
+  "repository": "git@github.com:REND42/mark-meta.git",
+  "author": "REND42 <rend42@163.com>",
+  "bin": {
+    "mark-meta": "bin/mark-meta.js"
+  },
+  "scripts": {
+    "build": "rimraf dist && unbuild",
+    "dev": "unbuild --stub",
+    "start": "tsc src/index.ts"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^17.0.36",
+    "typescript": "^4.7.2",
+    "unbuild": "^0.7.4"
+  }
+}
