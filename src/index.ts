@@ -1,5 +1,6 @@
 import fs from 'fs/promises'
 import path from 'path'
+import minimist from 'minimist'
 
 const log = console.log
 const directory = process.cwd()
@@ -27,7 +28,6 @@ async function handleMeta() {
   const config = JSON.parse(content)
   let metaConfig = ''
   Object.keys(config).forEach(key => {
-    // console.log(key, config[key])
     metaConfig = metaConfig + `${key}: ${config[key]}\n`
   })
 
@@ -50,6 +50,13 @@ async function insertMeta(file: string, meta: string, replace: boolean = true) {
 }
 
 async function run() {
+  const argv = minimist(process.argv.slice(2), {
+    boolean: ['replace'],
+    alias: {
+      r: 'replace'
+    }
+  })
+
   const files = (await fs.readdir(directory, { withFileTypes: true }))
     .filter(entry => entry.isFile())
     .map(entry => entry.name)
@@ -61,8 +68,7 @@ async function run() {
 
   handleConfigFile()
   const meta = await handleMeta()
-  console.log(meta)
-  Promise.all(mdFiles.map(async md => ( insertMeta(md, meta) )))
+  Promise.all(mdFiles.map(async md => ( insertMeta(md, meta, argv.replace) )))
 
   log(`found ${ mdFiles.length } markdown files in current directory.`)
 }
