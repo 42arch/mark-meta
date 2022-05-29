@@ -1,4 +1,4 @@
-import fs from 'fs/promises'
+import { promises as fs, existsSync} from 'fs'
 import path from 'path'
 import minimist from 'minimist'
 
@@ -6,7 +6,7 @@ const log = console.log
 const directory = process.cwd()
 
 async function handleConfigFile() {
-  const isExits = await fs.stat(path.join(directory, 'meta.json')).then(() => true).catch(() => false)
+  const isExits = existsSync(path.join(directory, 'meta.json'))
   if(isExits) {
     log(`meta.json is found.`)
     log()
@@ -14,17 +14,17 @@ async function handleConfigFile() {
     log(`meta.json is not found, creating a default meta.json.`)
     log()
 
-    let meta = {
+    const d = {
       title: ''
     }
-    await fs.writeFile('meta.json', JSON.stringify(meta, null, 2))
+    await fs.writeFile('meta.json', JSON.stringify(d, null, 2), 'utf-8')
     log(`meta.json is created.`)
     log()
   }
 }
 
 async function handleMeta() {
-  const content = await fs.readFile( path.join(directory, 'meta.json'), 'utf8')
+  const content = await fs.readFile(path.join(directory, 'meta.json'), 'utf-8')
   const config = JSON.parse(content)
   let metaConfig = ''
   Object.keys(config).forEach(key => {
@@ -36,7 +36,7 @@ async function handleMeta() {
 }
 
 async function insertMeta(file: string, meta: string, replace: boolean = true) {
-  const o = await fs.readFile(path.join(directory, file), 'utf8')
+  const o = await fs.readFile(path.join(directory, file), 'utf-8')
   const regex = /^(---)[\d\D]*?(---\n)/g
   if(o.match(regex)) {
     if(replace) {
@@ -66,7 +66,7 @@ async function run() {
     return path.extname(filePath) === '.md'
   })
 
-  handleConfigFile()
+  await handleConfigFile()
   const meta = await handleMeta()
   Promise.all(mdFiles.map(async md => ( insertMeta(md, meta, argv.replace) )))
 
