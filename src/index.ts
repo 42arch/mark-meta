@@ -1,38 +1,56 @@
-import fs from 'fs'
+import fs from 'fs/promises'
 import path from 'path'
 
 const log = console.log
 const directory = process.cwd()
 
-function handleConfigFile() {
-  const isExits = fs.existsSync(path.join(directory, 'meta.json'))
+async function handleConfigFile() {
+  const isExits = await fs.stat(path.join(directory, 'meta.json')).then(() => true).catch(() => false)
   if(isExits) {
     log(`meta.json is found.`)
+    log()
   } else {
     log(`meta.json is not found, creating a default meta.json.`)
+    log()
 
     let meta = {
       title: ''
     }
-    fs.writeFileSync('meta.json', JSON.stringify(meta, null, 2))
+    await fs.writeFile('meta.json', JSON.stringify(meta, null, 2))
     log(`meta.json is created.`)
+    log()
   }
 }
 
-function handleMeta(replace: boolean) {
-  const content = fs.readFileSync( path.join(directory, 'meta.json'), 'utf8')
+async function handleMeta() {
+  const content = await fs.readFile( path.join(directory, 'meta.json'), 'utf8')
   const config = JSON.parse(content)
-  const metaConfig = Object.keys(config).map(key => {
-    return `${key}: ${config[key]}\n`
+  let metaConfig = ''
+  Object.keys(config).forEach(key => {
+    // console.log(key, config[key])
+    metaConfig = metaConfig + `${key}: ${config[key]}\n`
   })
 
-  const metaContent = `---\n${metaConfig}---`
+  const metaContent = `---\n${metaConfig}---\n`
   return metaContent
 }
 
+async function insertMeta(file: string, meta: string, replace: boolean = true) {
+  const o = await fs.readFile(path.join(directory, file), 'utf8')
+  const regex = /^(---)[\d\D]*?(---\n)/g
+  if(o.match(regex)) {
+    if(replace) {
+      const n = o.replace(regex, meta)
+      return fs.writeFile(path.join(directory, file), n)
+    }
+  } else {
+    const n = `${meta}${o}`
+    return fs.writeFile(path.join(directory, file), n)
+  }
+}
 
-function run() {
-  const files = fs.readdirSync(directory, { withFileTypes: true })
+async function run() {
+  const files = (await fs.readdir(directory, { withFileTypes: true }))
     .filter(entry => entry.isFile())
     .map(entry => entry.name)
 
@@ -42,8 +60,9 @@ function run() {
   })
 
   handleConfigFile()
-  const meta = handleMeta(true)
+  const meta = await handleMeta()
   console.log(meta)
+  Promise.all(mdFiles.map(async md => ( insertMeta(md, meta) )))
 
   log(`found ${ mdFiles.length } markdown files in current directory.`)
 }

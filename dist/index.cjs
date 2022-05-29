@@ -1,0 +1,1 @@
+module.exports = require("F:/MyGithub/mark-meta/node_modules/jiti/lib/index.js")(null, { interopDefault: true })('F:/MyGithub/mark-meta/src/index')
