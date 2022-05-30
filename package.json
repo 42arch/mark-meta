@@ -1,7 +1,21 @@
 {
   "name": "mark-meta",
-  "version": "0.0.3",
-  "main": "index.js",
+  "version": "0.0.4",
+  "main": "./dist/index.mjs",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.mjs",
+      "types": "./dist/index.d.ts"
+    },
+    "./*": "./*"
+  },
+  "files": [
+    "dist",
+    "bin",
+    "dict"
+  ],
   "repository": "git@github.com:REND42/mark-meta.git",
   "author": "REND42 <rend42@163.com>",
   "bin": {
