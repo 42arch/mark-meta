@@ -1,6 +1,7 @@
 import { promises as fs, existsSync} from 'fs'
 import path from 'path'
 import minimist from 'minimist'
+import { version } from '../package.json'
 
 const log = console.log
 const directory = process.cwd()
@@ -50,6 +51,7 @@ async function insertMeta(file: string, meta: string, replace: boolean = true) {
 }
 
 async function run() {
+  log(`version: ${version}` )
   const argv = minimist(process.argv.slice(2), {
     boolean: ['replace'],
     alias: {
