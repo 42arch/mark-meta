@@ -13,7 +13,7 @@ Add meta info to your markdown file.
 cd to any directory path and run
 
 ```bash
-npx mark-meta
+npx mark-meta@latest
 ```
 
 It will scan all your files under the current directory and find all markdown files (.md). Then it will create a config file named `meta.json` at the first running time, the default config is:
@@ -41,7 +41,7 @@ You can edit `meta.json` to customize your own meta info.
 If meta info already exists in a markdown file, this will not be modified by default. If you want to replace them, you can add `--replace` or `-r` argument. Like:
 
 ```bash
-npx mark-meta --replace
+npx mark-meta@latest --replace
 ```
 
 ## CLI Options
