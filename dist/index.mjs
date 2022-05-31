@@ -251,7 +251,7 @@ function isConstructorOrProto (obj, key) {
     return key === 'constructor' && typeof obj[key] === 'function' || key === '__proto__';
 }
 
-const version = "0.0.6";
+const version = "0.0.11";
 
 const log = console.log;
 const directory = process.cwd();

@@ -1,6 +1,7 @@
 {
-  "name": "mark-meta",
-  "version": "0.0.7",
+  "name": "mark-meta-test",
+  "type": "module",
+  "version": "0.0.4",
   "main": "./dist/index.mjs",
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
