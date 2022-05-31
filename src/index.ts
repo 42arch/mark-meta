@@ -1,6 +1,7 @@
 import { promises as fs, existsSync} from 'fs'
 import path from 'path'
 import minimist from 'minimist'
+import pc from 'picocolors'
 import { version } from '../package.json'
 
 const log = console.log
@@ -9,10 +10,10 @@ const directory = process.cwd()
 async function handleConfigFile() {
   const isExits = existsSync(path.join(directory, 'meta.json'))
   if(isExits) {
-    log(`meta.json is found.`)
+    log(`${pc.green('meta.json is found.')}`)
     log()
   } else {
-    log(`meta.json is not found, creating a default meta.json.`)
+    log(pc.red(`meta.json is not found, creating a default meta.json.`))
     log()
 
     const d = {
@@ -51,7 +52,7 @@ async function insertMeta(file: string, meta: string, replace: boolean = true) {
 }
 
 async function run() {
-  log(`version: ${version}` )
+  log(pc.green(`version: ${version}`))
   const argv = minimist(process.argv.slice(2), {
     boolean: ['replace'],
     alias: {
@@ -70,9 +71,9 @@ async function run() {
 
   await handleConfigFile()
   const meta = await handleMeta()
-  Promise.all(mdFiles.map(async md => ( insertMeta(md, meta, argv.replace) )))
+  Promise.all(mdFiles.map(async md => (insertMeta(md, meta, argv.replace) )))
 
-  log(`found ${ mdFiles.length } markdown files in current directory.`)
+  log(pc.green(`all done!`))
 }
 
 run()
